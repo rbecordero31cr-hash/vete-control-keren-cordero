@@ -126,7 +126,6 @@ namespace VetControl
             int meses = edad * 12;
             lblMeses.Text = "Edad en meses: " + meses;
 
-
             // Determinar la etapa de vida de la mascota
             string etapa;
             if (edad < 1)
