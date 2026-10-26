@@ -40,8 +40,6 @@
             txtEdad = new TextBox();
             txtPeso = new TextBox();
             txtSexo = new TextBox();
-            label5 = new Label();
-            txtCosto = new TextBox();
             lblEtapa = new Label();
             lblMeses = new Label();
             lblCosto = new Label();
@@ -56,6 +54,8 @@
             limpiarListaToolStripMenuItem = new ToolStripMenuItem();
             lblTotal = new Label();
             colorDialog1 = new ColorDialog();
+            lstServicios = new ListBox();
+            lblServicios = new Label();
             cmsLista.SuspendLayout();
             SuspendLayout();
             // 
@@ -161,31 +161,13 @@
             txtSexo.Size = new Size(100, 35);
             txtSexo.TabIndex = 10;
             // 
-            // label5
-            // 
-            label5.AutoSize = true;
-            label5.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label5.Location = new Point(28, 299);
-            label5.Name = "label5";
-            label5.Size = new Size(71, 30);
-            label5.TabIndex = 11;
-            label5.Text = "Costo:";
-            // 
-            // txtCosto
-            // 
-            txtCosto.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txtCosto.Location = new Point(125, 296);
-            txtCosto.Name = "txtCosto";
-            txtCosto.Size = new Size(100, 35);
-            txtCosto.TabIndex = 14;
-            // 
             // lblEtapa
             // 
             lblEtapa.BorderStyle = BorderStyle.FixedSingle;
             lblEtapa.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblEtapa.Location = new Point(28, 351);
+            lblEtapa.Location = new Point(28, 309);
             lblEtapa.Name = "lblEtapa";
-            lblEtapa.Size = new Size(38, 15);
+            lblEtapa.Size = new Size(197, 57);
             lblEtapa.TabIndex = 15;
             lblEtapa.Text = "-";
             // 
@@ -193,16 +175,17 @@
             // 
             lblMeses.AutoSize = true;
             lblMeses.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblMeses.Location = new Point(28, 394);
+            lblMeses.Location = new Point(28, 432);
             lblMeses.Name = "lblMeses";
             lblMeses.Size = new Size(0, 30);
             lblMeses.TabIndex = 16;
+            lblMeses.Click += lblMeses_Click;
             // 
             // lblCosto
             // 
             lblCosto.AutoSize = true;
             lblCosto.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblCosto.Location = new Point(31, 438);
+            lblCosto.Location = new Point(28, 477);
             lblCosto.Name = "lblCosto";
             lblCosto.Size = new Size(0, 30);
             lblCosto.TabIndex = 17;
@@ -210,7 +193,7 @@
             // lblMensaje
             // 
             lblMensaje.AutoSize = true;
-            lblMensaje.Location = new Point(79, 418);
+            lblMensaje.Location = new Point(28, 387);
             lblMensaje.Name = "lblMensaje";
             lblMensaje.Size = new Size(0, 30);
             lblMensaje.TabIndex = 18;
@@ -229,7 +212,7 @@
             // btnLimpiar
             // 
             btnLimpiar.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnLimpiar.Location = new Point(451, 390);
+            btnLimpiar.Location = new Point(479, 387);
             btnLimpiar.Name = "btnLimpiar";
             btnLimpiar.Size = new Size(99, 38);
             btnLimpiar.TabIndex = 20;
@@ -240,7 +223,7 @@
             // btnColor
             // 
             btnColor.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnColor.Location = new Point(581, 385);
+            btnColor.Location = new Point(634, 385);
             btnColor.Name = "btnColor";
             btnColor.Size = new Size(76, 39);
             btnColor.TabIndex = 21;
@@ -251,7 +234,7 @@
             // btnSalir
             // 
             btnSalir.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnSalir.Location = new Point(684, 385);
+            btnSalir.Location = new Point(774, 385);
             btnSalir.Name = "btnSalir";
             btnSalir.Size = new Size(79, 39);
             btnSalir.TabIndex = 22;
@@ -264,7 +247,7 @@
             lstMascotas.ContextMenuStrip = cmsLista;
             lstMascotas.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lstMascotas.FormattingEnabled = true;
-            lstMascotas.Location = new Point(388, 47);
+            lstMascotas.Location = new Point(537, 87);
             lstMascotas.Name = "lstMascotas";
             lstMascotas.Size = new Size(120, 184);
             lstMascotas.TabIndex = 23;
@@ -282,28 +265,53 @@
             eliminarToolStripMenuItem.Name = "eliminarToolStripMenuItem";
             eliminarToolStripMenuItem.Size = new Size(138, 22);
             eliminarToolStripMenuItem.Text = "Eliminar";
+            eliminarToolStripMenuItem.Click += eliminarToolStripMenuItem_Click;
             // 
             // limpiarListaToolStripMenuItem
             // 
             limpiarListaToolStripMenuItem.Name = "limpiarListaToolStripMenuItem";
             limpiarListaToolStripMenuItem.Size = new Size(138, 22);
             limpiarListaToolStripMenuItem.Text = "Limpiar lista";
+            limpiarListaToolStripMenuItem.Click += limpiarListaToolStripMenuItem_Click;
             // 
             // lblTotal
             // 
             lblTotal.AutoSize = true;
             lblTotal.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblTotal.Location = new Point(385, 253);
+            lblTotal.Location = new Point(537, 287);
             lblTotal.Name = "lblTotal";
             lblTotal.Size = new Size(123, 30);
             lblTotal.TabIndex = 24;
             lblTotal.Text = "Mascotas: 0";
+            lblTotal.Click += lblTotal_Click;
+            // 
+            // lstServicios
+            // 
+            lstServicios.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lstServicios.FormattingEnabled = true;
+            lstServicios.Items.AddRange(new object[] { "Consulta general", "Vacunación", "Desparasitación", "Baño" });
+            lstServicios.Location = new Point(288, 117);
+            lstServicios.Name = "lstServicios";
+            lstServicios.Size = new Size(164, 154);
+            lstServicios.TabIndex = 25;
+            // 
+            // lblServicios
+            // 
+            lblServicios.AutoSize = true;
+            lblServicios.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblServicios.Location = new Point(269, 74);
+            lblServicios.Name = "lblServicios";
+            lblServicios.Size = new Size(221, 30);
+            lblServicios.TabIndex = 26;
+            lblServicios.Text = "Seleccione un servicio:";
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(13F, 30F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1364, 749);
+            Controls.Add(lblServicios);
+            Controls.Add(lstServicios);
             Controls.Add(lblTotal);
             Controls.Add(lstMascotas);
             Controls.Add(btnSalir);
@@ -314,8 +322,6 @@
             Controls.Add(lblCosto);
             Controls.Add(lblMeses);
             Controls.Add(lblEtapa);
-            Controls.Add(txtCosto);
-            Controls.Add(label5);
             Controls.Add(txtSexo);
             Controls.Add(txtPeso);
             Controls.Add(txtEdad);
@@ -350,8 +356,6 @@
         private TextBox txtEdad;
         private TextBox txtPeso;
         private TextBox txtSexo;
-        private Label label5;
-        private TextBox txtCosto;
         private Label lblEtapa;
         private Label lblMeses;
         private Label lblCosto;
@@ -366,5 +370,7 @@
         private ToolStripMenuItem eliminarToolStripMenuItem;
         private ToolStripMenuItem limpiarListaToolStripMenuItem;
         private ColorDialog colorDialog1;
+        private ListBox lstServicios;
+        private Label lblServicios;
     }
 }
