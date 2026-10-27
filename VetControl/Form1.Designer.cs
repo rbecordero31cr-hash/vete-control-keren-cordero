@@ -56,7 +56,9 @@
             colorDialog1 = new ColorDialog();
             lstServicios = new ListBox();
             lblServicios = new Label();
+            errorProvider1 = new ErrorProvider(components);
             cmsLista.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
             SuspendLayout();
             // 
             // lblTitulo
@@ -139,9 +141,11 @@
             // 
             txtEdad.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             txtEdad.Location = new Point(125, 147);
+            txtEdad.MaxLength = 2;
             txtEdad.Name = "txtEdad";
             txtEdad.Size = new Size(100, 35);
             txtEdad.TabIndex = 8;
+            txtEdad.KeyPress += txtEdad_KeyPress;
             // 
             // txtPeso
             // 
@@ -305,6 +309,10 @@
             lblServicios.TabIndex = 26;
             lblServicios.Text = "Seleccione un servicio:";
             // 
+            // errorProvider1
+            // 
+            errorProvider1.ContainerControl = this;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(13F, 30F);
@@ -339,6 +347,7 @@
             Text = "Form1";
             Load += Form1_Load;
             cmsLista.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -372,5 +381,6 @@
         private ColorDialog colorDialog1;
         private ListBox lstServicios;
         private Label lblServicios;
+        private ErrorProvider errorProvider1;
     }
 }

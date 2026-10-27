@@ -50,6 +50,7 @@ namespace VetControl
             lblMeses.Text = "";
             lblCosto.Text = "";
             lblMensaje.Text = "";
+            errorProvider1.Clear();
 
             txtNombre.Focus();
         }
@@ -61,174 +62,135 @@ namespace VetControl
 
         private void btnAgregar_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtNombre.Text) ||
-                string.IsNullOrWhiteSpace(txtEspecie.Text) ||
-                string.IsNullOrWhiteSpace(txtEdad.Text) ||
-                string.IsNullOrWhiteSpace(txtPeso.Text) ||
-                string.IsNullOrWhiteSpace(txtSexo.Text))
+            if (!ValidarCampos())
             {
-                MessageBox.Show("Complete todos los campos.",
-                    "Datos no válidos", MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
                 return;
             }
 
-            if (!int.TryParse(txtEdad.Text, out int edad) ||
-                edad < 0 || edad > 30)
+            Mascota mascota = new Mascota();
+
+            mascota.Nombre = txtNombre.Text.Trim();
+            mascota.Especie = txtEspecie.Text.Trim();
+            mascota.Edad = int.Parse(txtEdad.Text);
+            mascota.Peso = double.Parse(txtPeso.Text);
+            mascota.Sexo = char.ToUpper(txtSexo.Text.Trim()[0]);
+            mascota.Servicio = lstServicios.Text;
+
+            string etapa = mascota.ObtenerEtapa();
+
+            lblEtapa.Text = etapa;
+
+            switch (etapa)
             {
-                MessageBox.Show(
-                    "La edad debe ser un número entero entre 0 y 30.",
-                    "Datos no válidos", MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-                return;
+                case "Cachorro":
+                    lblEtapa.BackColor = Color.LightSkyBlue;
+                    break;
+
+                case "Adulto":
+                    lblEtapa.BackColor = Color.LightGreen;
+                    break;
+
+                case "Senior":
+                    lblEtapa.BackColor = Color.Khaki;
+                    break;
             }
 
-            if (!decimal.TryParse(txtPeso.Text, out decimal peso) ||
-                peso <= 0)
+            lblMeses.Text = "Edad en meses: " +
+                            mascota.CalcularEdadEnMeses();
+
+            decimal costoBase = mascota.ObtenerCostoBase();
+            decimal descuento = mascota.CalcularDescuento();
+            decimal impuesto = mascota.CalcularImpuesto();
+            decimal total = mascota.CalcularTotal();
+
+            lblCosto.Text =
+                "Costo base: ₡" + costoBase.ToString("N2") +
+                "\nDescuento: ₡" + descuento.ToString("N2") +
+                "\nImpuesto (13%): ₡" + impuesto.ToString("N2") +
+                "\nTotal: ₡" + total.ToString("N2");
+
+            lstMascotas.Items.Add(mascota.ObtenerResumen());
+
+            ActualizarTotal();
+
+            string resumen = "Mascota registrada\n\n" +
+                             "Nombre: " + mascota.Nombre + "\n" +
+                             "Especie: " + mascota.Especie + "\n" +
+                             "Sexo: " + mascota.ObtenerSexoCompleto() + "\n" +
+                             "Edad: " + mascota.Edad + " años\n" +
+                             "Etapa: " + etapa + "\n" +
+                             "Edad en meses: " +
+                             mascota.CalcularEdadEnMeses() + "\n" +
+                             "Servicio: " + mascota.Servicio + "\n" +
+                             "Costo base: ₡" + costoBase.ToString("N2") + "\n" +
+                             "Descuento: ₡" + descuento.ToString("N2") + "\n" +
+                             "Impuesto: ₡" + impuesto.ToString("N2") + "\n" +
+                             "Total: ₡" + total.ToString("N2");
+
+            MessageBox.Show(
+                resumen,
+                "Mascota registrada",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+
+            LimpiarCampos();
+            lstServicios.ClearSelected();
+            MostrarMensaje("Mascota agregada: " + mascota.Nombre, Color.Green);
+        }
+
+
+        private void btnLimpiar_Click(object sender, EventArgs e)
+        {
+            LimpiarCampos();
+            lstServicios.ClearSelected();
+        }
+        private bool ValidarCampos()
+        {
+            errorProvider1.Clear();
+            bool valido = true;
+
+            if (string.IsNullOrWhiteSpace(txtNombre.Text))
             {
-                MessageBox.Show(
-                    "El peso debe ser un número mayor que cero.",
-                    "Datos no válidos", MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-                return;
+                errorProvider1.SetError(txtNombre, "Ingrese el nombre de la mascota.");
+                valido = false;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtEspecie.Text))
+            {
+                errorProvider1.SetError(txtEspecie, "Ingrese la especie.");
+                valido = false;
+            }
+
+            int edad;
+            if (!int.TryParse(txtEdad.Text, out edad) || edad < 0 || edad > 30)
+            {
+                errorProvider1.SetError(txtEdad, "La edad debe ser un número entre 0 y 30.");
+                valido = false;
+            }
+
+            double peso;
+            if (!double.TryParse(txtPeso.Text, out peso) || peso <= 0)
+            {
+                errorProvider1.SetError(txtPeso, "El peso debe ser mayor que cero.");
+                valido = false;
             }
 
             string sexo = txtSexo.Text.Trim().ToUpper();
 
             if (sexo != "M" && sexo != "H")
             {
-                MessageBox.Show(
-                    "En sexo escriba M para macho o H para hembra.",
-                    "Datos no válidos", MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-                return;
+                errorProvider1.SetError(txtSexo, "Ingrese M para macho o H para hembra.");
+                valido = false;
             }
 
             if (lstServicios.SelectedIndex == -1)
             {
-                MessageBox.Show("Seleccione un servicio.",
-                    "Datos no válidos", MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-                return;
+                errorProvider1.SetError(lstServicios, "Seleccione un servicio.");
+                valido = false;
             }
 
-            string nombre = txtNombre.Text.Trim();
-            string especie = txtEspecie.Text.Trim();
-            // Convertir el sexo usando switch.
-            char letraSexo = sexo[0];
-            string sexoCompleto;
-
-            switch (letraSexo)
-            {
-                case 'M':
-                    sexoCompleto = "Macho";
-                    break;
-
-                case 'H':
-                    sexoCompleto = "Hembra";
-                    break;
-
-                default:
-                    sexoCompleto = "";
-                    break;
-            }
-            string servicio = lstServicios.Text;
-
-            string etapa;
-
-            if (edad < 1)
-            {
-                etapa = "Cachorro";
-                lblEtapa.BackColor = Color.LightSkyBlue;
-            }
-            else if (edad <= 7)
-            {
-                etapa = "Adulto";
-                lblEtapa.BackColor = Color.LightGreen;
-            }
-            else
-            {
-                etapa = "Senior";
-                lblEtapa.BackColor = Color.Khaki;
-            }
-
-            lblEtapa.Text = etapa;
-            lblMeses.Text = "Edad en meses: " + (edad * 12);
-
-            decimal costoBase;
-
-            switch (servicio)
-            {
-                case "Consulta general":
-                    costoBase = 15000m;
-                    break;
-
-                case "Vacunación":
-                    costoBase = 20000m;
-                    break;
-
-                case "Desparasitación":
-                    costoBase = 10000m;
-                    break;
-
-                case "Baño":
-                    costoBase = 12000m;
-                    break;
-
-                default:
-                    MessageBox.Show("Seleccione un servicio válido.",
-                        "Datos no válidos", MessageBoxButtons.OK,
-                        MessageBoxIcon.Warning);
-                    return;
-            }
-
-            decimal descuento =
-                (etapa == "Cachorro" || etapa == "Senior")
-                ? costoBase * 0.10m : 0m;
-
-            decimal subtotal = costoBase - descuento;
-            decimal impuesto = subtotal * 0.13m;
-            decimal total = subtotal + impuesto;
-
-            lblCosto.Text =
-                "Descuento: ₡" + descuento.ToString("N2") +
-                "\nImpuesto (13%): ₡" + impuesto.ToString("N2") +
-                "\nTotal: ₡" + total.ToString("N2");
-
-            lstMascotas.Items.Add(
-                nombre + " (" + sexoCompleto + ") - " +
-                especie + " - " + etapa + " - " + servicio +
-                " - ₡" + total.ToString("N2"));
-
-            ActualizarTotal();
-
-            MessageBox.Show(
-                "Nombre: " + nombre +
-                "\nEspecie: " + especie +
-                "\nSexo: " + sexoCompleto +
-                "\nEtapa: " + etapa +
-                "\nServicio: " + servicio +
-                "\nTotal: ₡" + total.ToString("N2"),
-                "Mascota registrada",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
-
-            MostrarMensaje("Mascota agregada: " + nombre, Color.Green);
-
-            txtNombre.Clear();
-            txtEspecie.Clear();
-            txtEdad.Clear();
-            txtPeso.Clear();
-            txtSexo.Clear();
-
-            txtNombre.Focus();
-            lstServicios.ClearSelected();
-        }
-
-        private void btnLimpiar_Click(object sender, EventArgs e)
-        {
-            LimpiarCampos();
-            lstServicios.ClearSelected();
+            return valido;
         }
 
         private void btnColor_Click(object sender, EventArgs e)
@@ -323,6 +285,14 @@ namespace VetControl
         private void lblMeses_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void txtEdad_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
+            {
+                e.Handled = true;
+            }
         }
     }
 }
